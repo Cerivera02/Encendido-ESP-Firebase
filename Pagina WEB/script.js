@@ -13,15 +13,20 @@
 
 $(document).ready(function(){
 	var database = firebase.database();
+
 	var LED1;
 	var LED2;
 	var LED3;
 	var LED4;
+	var LEDRGB;
+	
 	database.ref().on("value", function(snap){
 		LED1 = snap.val().test.LED1;
 		LED2 = snap.val().test.LED2;
 		LED3 = snap.val().test.LED3;
 		LED4 = snap.val().test.LED4;
+		LEDRGB = snap.val().rgb.rgb;
+		LEDR = snap.val().rgb.r;
 		if(LED1 == "1"){
 			document.getElementById("unact").style.display = "none";
 			document.getElementById("act").style.display = "block";
@@ -49,6 +54,21 @@ $(document).ready(function(){
 		} else {
 			document.getElementById("unact3").style.display = "block";
 			document.getElementById("act3").style.display = "none";
+		}
+		if(LEDRGB == "1"){
+			document.getElementById("unact4").style.display = "none";
+			document.getElementById("act4").style.display = "block";
+
+			document.getElementById("ledRed").style.display = "block";
+			document.getElementById("ledBlue").style.display = "block";
+			document.getElementById("ledGreen").style.display = "block";
+
+		} else {
+			document.getElementById("unact4").style.display = "block";
+			document.getElementById("act4").style.display = "none";
+			document.getElementById("ledRed").style.display = "none";
+			document.getElementById("ledBlue").style.display = "none";
+			document.getElementById("ledGreen").style.display = "none";
 		}
 	});
 
@@ -92,4 +112,32 @@ $(document).ready(function(){
 			LED4 = 1;
 		}
 	})
+	$(".toggle-btn4").click(function(){
+		var firebaseRef = firebase.database().ref().child("/rgb/rgb");
+		if(LEDRGB == 1){
+			firebaseRef.set(0);
+			LEDRGB = 0;
+		} else {
+			firebaseRef.set(1);
+			LEDRGB = 1;
+		}
+	})
+	$("button").click(function(){
+		var ledBlue = null;
+		var ledGreen = null;
+		var ledRed = null;
+		ledRed = document.getElementById("ledRed").value;
+		ledGreen = document.getElementById("ledBlue").value;
+		ledBlue = document.getElementById("ledGreen").value;
+		
+		var firebaseRef = firebase.database().ref().child("/rgb/r");
+		firebaseRef.set(parseInt(ledRed));
+		var firebaseRef = firebase.database().ref().child("/rgb/g");
+		firebaseRef.set(parseInt(ledGreen));
+		var firebaseRef = firebase.database().ref().child("/rgb/b");
+		firebaseRef.set(parseInt(ledBlue));
+		
+	})
+	
+
 });

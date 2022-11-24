@@ -3,8 +3,16 @@ body {
 	background: #031321;
 }
 
-h1 {
+p {
     color: #fff;
+	font-size: 40px;
+	font-family: fantasy;
+}
+
+input {
+	border-radius: 15px;
+	margin-top: 10px;
+	text-align: center;
 }
 
 .wrapper{
@@ -23,7 +31,7 @@ h1 {
     align-items: center;
     flex-direction: column;
 }
-.toggle-btn, .toggle-btn1, .toggle-btn2, .toggle-btn3{
+.toggle-btn, .toggle-btn1, .toggle-btn2, .toggle-btn3,.toggle-btn4{
 	width: 80px;
 	height: 40px;
 	background: gray;
@@ -31,7 +39,7 @@ h1 {
 	padding:5px;
 	transition: all 300ms ease-in-out;
 }
-.toggle-btn > .inner-circle, .toggle-btn1 > .inner-circle, .toggle-btn2 > .inner-circle, .toggle-btn3 > .inner-circle{
+.toggle-btn > .inner-circle, .toggle-btn1 > .inner-circle, .toggle-btn2 > .inner-circle, .toggle-btn3 > .inner-circle, .toggle-btn4 > .inner-circle{
 	width: 40px;
 	height: 40px;
 	background: #fff;
@@ -61,7 +69,14 @@ h1 {
 	box-shadow: 0 0 10px #a3f321, 0 0 40px #a3f321, 0 0 80px #a3f321;
 	transition-delay: 0.5s;
 }
-.toggle-btn.active>.inner-circle,.toggle-btn1.active>.inner-circle,.toggle-btn2.active>.inner-circle,.toggle-btn3.active>.inner-circle{
+
+.toggle-btn4.active{
+	background: #aa21f3;
+	box-shadow: 0 0 10px #aa21f3, 0 0 40px #aa21f3, 0 0 80px #aa21f3;
+	transition-delay: 0.5s;
+}
+
+.toggle-btn.active>.inner-circle,.toggle-btn1.active>.inner-circle,.toggle-btn2.active>.inner-circle,.toggle-btn3.active>.inner-circle,.toggle-btn4.active>.inner-circle{
 	margin-left: 40px;
 }
 .icon1{	

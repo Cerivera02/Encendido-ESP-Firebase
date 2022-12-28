@@ -86,6 +86,26 @@
 				</div>
 			</div>
 		</div>
+		
+		<div class="progress">
+		  <p>Foco</p>
+<!--
+			<a class = "icon1" >
+				<i class="fas fa-4x fa-bed"></i>
+			</a>
+-->
+			<div class= "toggle-btn5" id="unact5">
+				<div class= "inner-circle">
+	
+				</div>
+			</div>
+			<div class= "toggle-btn5 active" id="act5" >
+				<div class= "inner-circle">
+	
+				</div>
+			</div>
+		</div>
+		
 		<div class="progress">
 		  <p>Tira RGB</p>
 <!--
@@ -105,16 +125,18 @@
 			</div>
 			<div id="form">
 				<div class="inputBox">
-					<input type="number" id="ledRed" placeholder="Valor de LED Rojo" max="255" min="0">
+					<input type="number" id="ledRed" placeholder="LED Rojo" max="255" min="0" value="0">
 				</div>
 				<div class="inputBox">
-					<input type="number" id="ledGreen" placeholder="Valor de LED Verde">
+					<input type="number" id="ledGreen" placeholder="LED Azul" max="255" min="0" value="0">
 				</div>
 				<div class="inputBox">
-					<input type="number" id="ledBlue" placeholder="Valor de LED Azul">
+					<input type="number" id="ledBlue" placeholder="LED Verde" max="255" min="0" value="0">
 				</div>
-				<button type="button" onclick="sub()">Prueba</button>
-
+				<br>
+				<button id="enviar" type="button" onclick="sub()">Enviar</button>
+<br>
+            
 				<!-- <script type="text/javascript">
 					//variables
 					var ledBlue = null;

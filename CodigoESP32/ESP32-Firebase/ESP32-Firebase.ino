@@ -7,8 +7,10 @@
 #include <Firebase_ESP_Client.h>
 #include <addons/TokenHelper.h>
 #include <addons/RTDBHelper.h>
+
 #define WIFI_SSID "Casa642-2.4g"
 #define WIFI_PASSWORD "Mcejr151631@"
+
 #define API_KEY "AIzaSyBs3V_GcW_q6gKgvQL2WXvhZlOWqOvFKmE"
 #define DATABASE_URL "https://esp32-ab718-default-rtdb.firebaseio.com" 
 #define USER_EMAIL "Cerivera2002@gmail.com"
@@ -20,20 +22,24 @@ FirebaseAuth auth;
 FirebaseConfig config;
 
 unsigned long sendDataPrevMillis = 0;
+int estConWifi = 18 ;
+int conWifi = 19 ;
 
 int habitacion1 = 2;
 int habitacion2 = 3;
 int habitacion3 = 4;
 int habitacion4 = 5;
+int focoExterior = 17;
 
-int ledR = 13;
-int ledG = 14;
-int ledB = 15;
+int ledR = 12;
+int ledG = 13;
+int ledB = 14;
 
 int led1 = 0;
 int led2 = 0;
 int led3 = 0;
 int led4 = 0;
+int foco = 0;
 
 int ledRGB = 0;
 int r = 0;
@@ -46,14 +52,23 @@ void setup()
 {
   Serial.begin(115200);
 
+  pinMode(estConWifi, OUTPUT);
+  pinMode(conWifi,OUTPUT);
+
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
   Serial.print("Conectando a Wi-Fi");
+  
   while (WiFi.status() != WL_CONNECTED)
   {
+    digitalWrite(estConWifi,HIGH);
     Serial.print(".");
-    delay(500);
+    delay(2000);
+    digitalWrite(estConWifi,LOW);
   }
   Serial.println();
+
+  digitalWrite(conWifi,HIGH);
   Serial.print("Conectado con la IP: ");
   Serial.println(WiFi.localIP());
   Serial.println();
@@ -64,7 +79,7 @@ void setup()
   config.database_url = DATABASE_URL;
   config.token_status_callback = tokenStatusCallback;
 #if defined(ESP8266)
-    fbdo.setBSSLBufferSize(2048, 2048 );
+  fbdo.setBSSLBufferSize(2048, 2048 );
 #endif
   fbdo.setResponseSize(2048);
   Firebase.begin(&config, &auth);
@@ -76,6 +91,7 @@ void setup()
   pinMode(habitacion2, OUTPUT);
   pinMode(habitacion3, OUTPUT);
   pinMode(habitacion4, OUTPUT);
+  pinMode(focoExterior, OUTPUT);
 
   pinMode(ledR, OUTPUT);
   pinMode(ledG, OUTPUT);
@@ -87,12 +103,14 @@ void loop()
 {
   if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0))
   {
+    
     sendDataPrevMillis = millis();
 
     Serial.printf("LED 1 =  %s\n", Firebase.RTDB.getInt(&fbdo, F("/test/LED1")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
     Serial.printf("LED 2 =  %s\n", Firebase.RTDB.getInt(&fbdo, F("/test/LED2")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
     Serial.printf("LED 3 =  %s\n", Firebase.RTDB.getInt(&fbdo, F("/test/LED3")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
     Serial.printf("LED 4 =  %s\n", Firebase.RTDB.getInt(&fbdo, F("/test/LED4")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
+    Serial.printf("FOCO =  %s\n", Firebase.RTDB.getInt(&fbdo, F("/test/FOCO")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
     Serial.printf("Tira RGB =  %s\n", Firebase.RTDB.getInt(&fbdo, F("/rgb/rgb")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
     Serial.printf("Tira RGB LED R =  %s\n", Firebase.RTDB.getInt(&fbdo, F("/rgb/r")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
     Serial.printf("Tira RGB LED G =  %s\n", Firebase.RTDB.getInt(&fbdo, F("/rgb/g")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
@@ -108,6 +126,8 @@ void loop()
     led3 = fbdo.to<int>();
     Firebase.RTDB.getInt(&fbdo, F("/test/LED4"));
     led4 = fbdo.to<int>();
+    Firebase.RTDB.getInt(&fbdo, F("/test/FOCO"));
+    foco = fbdo.to<int>();
     Firebase.RTDB.getInt(&fbdo, F("/rgb/rgb"));
     ledRGB = fbdo.to<int>();
     Firebase.RTDB.getInt(&fbdo, F("/rgb/r"));
@@ -153,13 +173,28 @@ void loop()
       digitalWrite(habitacion4,LOW);
 
     }
+    if (foco == 1) {
+      Serial.println("Foco Exterior Encendido");
+      digitalWrite(focoExterior,HIGH);
+      
+    } else if (led4 == 0) {
+      Serial.println("Foco Exterior Apagado");
+      digitalWrite(focoExterior,LOW);
+
+    }
     if (ledRGB == 1) {
       Serial.print("Se encendio la tira led");
       analogWrite(ledR, r);
+      Serial.print("Intencidad Rojo: " + r);
       analogWrite(ledG, g);
-      analogWrite(ledB, b);      
+      Serial.print("Intencidad Verde: " + g);
+      analogWrite(ledB, b);
+      Serial.print("Intencidad Azul: " + b);      
     } else if (ledRGB == 0 ) {
       Serial.print("Se apago la tira led");
+      analogWrite(ledR, 0);
+      analogWrite(ledG, 0);
+      analogWrite(ledB, 0); 
     }
 
     Serial.println();

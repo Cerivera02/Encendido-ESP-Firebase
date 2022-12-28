@@ -18,6 +18,7 @@ $(document).ready(function(){
 	var LED2;
 	var LED3;
 	var LED4;
+    var FOCO;
 	var LEDRGB;
 	
 	database.ref().on("value", function(snap){
@@ -25,6 +26,7 @@ $(document).ready(function(){
 		LED2 = snap.val().test.LED2;
 		LED3 = snap.val().test.LED3;
 		LED4 = snap.val().test.LED4;
+        FOCO = snap.val().test.FOCO;
 		LEDRGB = snap.val().rgb.rgb;
 		LEDR = snap.val().rgb.r;
 		if(LED1 == "1"){
@@ -62,6 +64,8 @@ $(document).ready(function(){
 			document.getElementById("ledRed").style.display = "block";
 			document.getElementById("ledBlue").style.display = "block";
 			document.getElementById("ledGreen").style.display = "block";
+            
+            document.getElementById("enviar").style.display = "block";
 
 		} else {
 			document.getElementById("unact4").style.display = "block";
@@ -69,7 +73,17 @@ $(document).ready(function(){
 			document.getElementById("ledRed").style.display = "none";
 			document.getElementById("ledBlue").style.display = "none";
 			document.getElementById("ledGreen").style.display = "none";
+            document.getElementById("enviar").style.display = "none";
 		}
+        
+        if(FOCO == "1"){
+			document.getElementById("unact5").style.display = "none";
+			document.getElementById("act5").style.display = "block";
+		} else {
+			document.getElementById("unact5").style.display = "block";
+			document.getElementById("act5").style.display = "none";
+		}
+        
 	});
 
 	$(".toggle-btn").click(function(){
@@ -120,6 +134,16 @@ $(document).ready(function(){
 		} else {
 			firebaseRef.set(1);
 			LEDRGB = 1;
+		}
+	})
+    $(".toggle-btn5").click(function(){
+		var firebaseRef = firebase.database().ref().child("/test/FOCO");
+		if(FOCO == 1){
+			firebaseRef.set(0);
+			FOCO = 0;
+		} else {
+			firebaseRef.set(1);
+			FOCO = 1;
 		}
 	})
 	$("button").click(function(){
